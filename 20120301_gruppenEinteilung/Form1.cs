@@ -126,6 +126,7 @@ namespace _20120301_gruppenEinteilung {
                 
                 tbxSchueler.Left = 5;
                 tbxSchueler.Top = 15;
+                tbxSchueler.Width = 80;
                 
                 rbtnAufgabe1.Left = 100;
                 rbtnAufgabe1.Top = 10;
@@ -138,6 +139,7 @@ namespace _20120301_gruppenEinteilung {
                 cbxSolo.Left = 310;
                 cbxSolo.Top = 10;
                 cbxSolo.Width = 20;
+                cbxSolo.Enabled = false;
                 
                 tbxSchueler.Text = Convert.ToString(pSchueler);
                 rbtnAufgabe1.Text = "";
