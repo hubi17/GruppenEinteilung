@@ -178,7 +178,7 @@
             this.btnEinteilen.Text = "Einteilen";
             this.btnEinteilen.UseVisualStyleBackColor = true;
             this.btnEinteilen.Visible = false;
-            this.btnEinteilen.Click += new System.EventHandler(this.btnEinteilen_Click_1);
+            this.btnEinteilen.Click += new System.EventHandler(this.btnEinteilen_Click);
             // 
             // pnlAufgabe1
             // 

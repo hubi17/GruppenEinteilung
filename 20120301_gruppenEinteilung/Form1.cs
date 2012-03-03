@@ -28,10 +28,6 @@ namespace _20120301_gruppenEinteilung {
         int gruppenGroesse = 0;
         SchuelerSelection[] mSchueler;
         string[,] mAuswahl;
-        string[,] mAuswahlAufgabe1;
-        string[,] mAuswahlAufgabe2;
-        GruppenSelection[] mAufgabe1;
-        GruppenSelection[] mAufgabe2;
         Random mRnd = new Random();
         // variable to store used indeces for random groups
         int[] mIndeces;
@@ -228,6 +224,9 @@ namespace _20120301_gruppenEinteilung {
 
             pnlAuswahl.Controls.Clear();
             pnlAufgabe1.Controls.Clear();
+            lblEinteilungAufgabe1.Visible = false;
+            pnlAufgabe2.Controls.Clear();
+            lblEinteilungAufgabe2.Visible = false;
 
             gruppenGroesse = 0;
             anzahlSchueler = 0;
@@ -238,16 +237,19 @@ namespace _20120301_gruppenEinteilung {
             GruppenSelection.resetZaehler();
         }
 
-        private void btnEinteilen_Click_1(object sender, EventArgs e) {
+        private void btnEinteilen_Click(object sender, EventArgs e) {
 
             //TODO check that all radio buttons selected
             //may not be needed as certain students not put into groups
 
-            int countAufgabe1 = 0;
-            int iterAufgabe1 = 0;
-            int countAufgabe2 = 0;
-            int iterAufgabe2 = 0;
-            int vTopPos = 0;
+            int vCountAufgabe1 = 0;
+            int vIterAufgabe1 = 0;
+            int vCountAufgabe2 = 0;
+            int vIterAufgabe2 = 0;
+            string[,] vAuswahlAufgabe1;
+            string[,] vAuswahlAufgabe2;
+            GruppenSelection[] vAufgabe1;
+            GruppenSelection[] vAufgabe2;
 
             mAuswahl = new string[anzahlSchueler, 4];
 
@@ -261,92 +263,100 @@ namespace _20120301_gruppenEinteilung {
                 
                 if (mSchueler[i].getAufgabe1().Checked == true) {
                     
-                    countAufgabe1++;
+                    vCountAufgabe1++;
                 } else {
                     
                     if (mSchueler[i].getAufgabe2().Checked == true) {
                         
-                        countAufgabe2++;
+                        vCountAufgabe2++;
                     }
                 }
             }
 
-            mAuswahlAufgabe1 = new string[countAufgabe1, 2];
-            mAuswahlAufgabe2 = new string[countAufgabe2, 2];
+            vAuswahlAufgabe1 = new string[vCountAufgabe1, 2];
+            vAuswahlAufgabe2 = new string[vCountAufgabe2, 2];
 
             // Schueler den jeweiligen Gruppen zuteilen.
             for (int i = 0; i < anzahlSchueler; i++) {
                 
                 if (mSchueler[i].getAufgabe1().Checked == true) {
                     
-                    mAuswahlAufgabe1[iterAufgabe1, 0] = mSchueler[i].getSchueler().Text;
-                    mAuswahlAufgabe1[iterAufgabe1, 1] = Convert.ToString(mSchueler[i].getSolo().Checked);
-                    iterAufgabe1++;
+                    vAuswahlAufgabe1[vIterAufgabe1, 0] = mSchueler[i].getSchueler().Text;
+                    vAuswahlAufgabe1[vIterAufgabe1, 1] = Convert.ToString(mSchueler[i].getSolo().Checked);
+                    vIterAufgabe1++;
                 } else {
                     
                     if (mSchueler[i].getAufgabe2().Checked == true) {
                         
-                        mAuswahlAufgabe2[iterAufgabe2, 0] = mSchueler[i].getSchueler().Text;
-                        mAuswahlAufgabe2[iterAufgabe2, 1] = Convert.ToString(mSchueler[i].getSolo().Checked);
-                        iterAufgabe2++;
+                        vAuswahlAufgabe2[vIterAufgabe2, 0] = mSchueler[i].getSchueler().Text;
+                        vAuswahlAufgabe2[vIterAufgabe2, 1] = Convert.ToString(mSchueler[i].getSolo().Checked);
+                        vIterAufgabe2++;
                     }
                 }
             }
 
-            //group1
-            mIndeces = new int[countAufgabe1];
-            GruppenSelection.resetZaehler();
-            // initialize array with -1 indeces
-            for (int i = 0; i < countAufgabe1; i++) {
-                
-                mIndeces[i] = -1;
-            }
+            vAufgabe1 = aufgabeEinteilen(vAuswahlAufgabe1, vCountAufgabe1);
+            vAufgabe2 = aufgabeEinteilen(vAuswahlAufgabe2, vCountAufgabe2);
 
-            mIndexPos = 0;
-            mAufgabe1 = new GruppenSelection[countAufgabe1 / DEFAULTGRUPPENGROESSE];
-
-            // check for uneven group size
-            for (int i = 0; i < countAufgabe1 / DEFAULTGRUPPENGROESSE; i++) {
-
-                mAufgabe1[i] = gruppeEinteilen(mAuswahlAufgabe1, countAufgabe1, vTopPos);
-                pnlAufgabe1.Controls.Add(mAufgabe1[i].getGroupBox());
-                vTopPos += 80;
-            }
-
-            mAufgabe1 = aufgabeEinteilen(countAufgabe1);
-            mAufgabe2 = aufgabeEinteilen(countAufgabe2);
+            addGroupToPanel(pnlAufgabe1, vAufgabe1);
+            addGroupToPanel(pnlAufgabe2, vAufgabe2);
 
             lblEinteilungAufgabe1.Visible = true;
             lblEinteilungAufgabe2.Visible = true;
         }
 
-        private GruppenSelection[] aufgabeEinteilen(int pGruppenGroesse) {
+        private GruppenSelection[] aufgabeEinteilen(string[,] pAuswahlAufgabe, int pAufgabenGroesse) {
 
             int vTopPos = 0;
-            GruppenSelection[] vReturn = new GruppenSelection[pGruppenGroesse / DEFAULTGRUPPENGROESSE];
+            int vGruppenGroesse = 0;
+            GruppenSelection[] vReturnGruppe;
 
-            // reset Zaehler for each group
-            GruppenSelection.resetZaehler();
+            // determine group size
+            // if uneven number then add one
+            /*
+            if (pAufgabenGroesse % DEFAULTGRUPPENGROESSE == 0) {
+                
+                vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE;
+            } else {
+                
+                vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE + 1;
+            }
+             */
+            // doesn't really work yet. for now this at least doesn't crash
+            vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE;
 
-            // reset index array
-            mIndeces = new int[pGruppenGroesse];
+            vReturnGruppe = new GruppenSelection[vGruppenGroesse];
+
+            // reset array of used indeces for random groups
+            mIndeces = new int[pAufgabenGroesse];
 
             // initialize array with -1 indeces
-            for (int i = 0; i < pGruppenGroesse; i++) {
+            // so that element with index 0 can also be randomly picked
+            for (int i = 0; i < pAufgabenGroesse; i++) {
 
                 mIndeces[i] = -1;
             }
 
             mIndexPos = 0;
 
-            for (int i = 0; i < pGruppenGroesse / DEFAULTGRUPPENGROESSE; i++) {
+            for (int i = 0; i < vGruppenGroesse; i++) {
 
-                mAufgabe2[i] = gruppeEinteilen(mAuswahlAufgabe2, pGruppenGroesse, vTopPos);
-                pnlAufgabe2.Controls.Add(mAufgabe2[i].getGroupBox());
+                vReturnGruppe[i] = gruppeEinteilen(pAuswahlAufgabe, pAufgabenGroesse, vTopPos);
+                // vTopPos sets the position of the GruppenSelection Element so that it
+                // is positioned correctly once added to the Panel
                 vTopPos += 80;
             }
 
-            return vReturn;
+            return vReturnGruppe;
+
+        }
+
+        private void addGroupToPanel(Panel pAusgabePanel, GruppenSelection[] pGruppe) {
+
+            for (int i = 0; i < pGruppe.Length; i++) {
+
+                pAusgabePanel.Controls.Add(pGruppe[i].getGroupBox());
+            }
 
         }
 
