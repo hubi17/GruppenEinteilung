@@ -6,8 +6,11 @@
 
 /*
  * TODO
- * -Positionierung mittels Point statt Top und Left.
- * -init method to set sane default values.
+ * - positioning via Point instead of Top and Left.
+ * - init method to set sane default values.
+ * - enable variable group size.
+ * - enable variable amount of tasks.
+ * - enable solo groups.
  */
 
 using System;
@@ -23,14 +26,20 @@ namespace _20120301_gruppenEinteilung {
 
     public partial class Form1 : Form {
 
+        // default group size, 2 for now
         const int DEFAULTGRUPPENGROESSE = 2;
-        int anzahlSchueler = 0;
-        int gruppenGroesse = 0;
+        // variable to count the number of students
+        int mAnzahlSchueler = 0;
+        // variable to store the size of groups, set to default value for now
+        int mGruppenGroesse = 0;
+        // class to store students and their assigned tasks
         SchuelerSelection[] mSchueler;
+        // array to store selected tasks for students
         string[,] mAuswahl;
         Random mRnd = new Random();
-        // variable to store used indeces for random groups
+        // array to store used indeces for random groups
         int[] mIndeces;
+        // variable to keep track of number of added indeces
         int mIndexPos;
 
         public Form1() {
@@ -178,6 +187,7 @@ namespace _20120301_gruppenEinteilung {
             }
         }
 
+        // method adds selected amount of students to selection panel
         private void btnEingeben_Click(object sender, EventArgs e) {
 
             int vTopPos = 0;
@@ -193,12 +203,12 @@ namespace _20120301_gruppenEinteilung {
                 lblSolo.Visible = true;
                 btnEinteilen.Visible = true;
 
-                anzahlSchueler = Convert.ToInt32(nudSchueler.Value);
-                gruppenGroesse = Convert.ToInt32(nudGruppen.Value);
+                mAnzahlSchueler = Convert.ToInt32(nudSchueler.Value);
+                mGruppenGroesse = Convert.ToInt32(nudGruppen.Value);
 
-                mSchueler = new SchuelerSelection[anzahlSchueler];
+                mSchueler = new SchuelerSelection[mAnzahlSchueler];
 
-                for (int i = 0; i < anzahlSchueler; i++) {
+                for (int i = 0; i < mAnzahlSchueler; i++) {
                     
                     mSchueler[i] = new SchuelerSelection(i + 1, lblSchueler.Left, vTopPos);
                     pnlAuswahl.Controls.Add(mSchueler[i].getGroupBox());
@@ -230,8 +240,8 @@ namespace _20120301_gruppenEinteilung {
             pnlAufgabe2.Controls.Clear();
             lblEinteilungAufgabe2.Visible = false;
 
-            gruppenGroesse = 0;
-            anzahlSchueler = 0;
+            mGruppenGroesse = 0;
+            mAnzahlSchueler = 0;
 
             nudGruppen.Value = DEFAULTGRUPPENGROESSE;
             nudSchueler.Value = 0;
@@ -253,15 +263,15 @@ namespace _20120301_gruppenEinteilung {
             GruppenSelection[] vAufgabe1;
             GruppenSelection[] vAufgabe2;
 
-            mAuswahl = new string[anzahlSchueler, 4];
+            mAuswahl = new string[mAnzahlSchueler, 4];
 
             // reset output panels
             // IMPORTANT!!!! - makes pressing button multiple times generate new random groups
             pnlAufgabe1.Controls.Clear();
             pnlAufgabe2.Controls.Clear();
 
-            // Schleife zur Determinierung der Groesse der einzelnen Aufgabengruppen.
-            for (int i = 0; i < anzahlSchueler; i++) {
+            // loop to determine amount of groups per task.
+            for (int i = 0; i < mAnzahlSchueler; i++) {
                 
                 if (mSchueler[i].getAufgabe1().Checked == true) {
                     
@@ -278,8 +288,8 @@ namespace _20120301_gruppenEinteilung {
             vAuswahlAufgabe1 = new string[vCountAufgabe1, 2];
             vAuswahlAufgabe2 = new string[vCountAufgabe2, 2];
 
-            // Schueler den jeweiligen Gruppen zuteilen.
-            for (int i = 0; i < anzahlSchueler; i++) {
+            // assign students to their tasks.
+            for (int i = 0; i < mAnzahlSchueler; i++) {
                 
                 if (mSchueler[i].getAufgabe1().Checked == true) {
                     

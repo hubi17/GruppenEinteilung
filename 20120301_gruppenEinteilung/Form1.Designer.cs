@@ -209,7 +209,7 @@
             // lblEinteilungAufgabe2
             // 
             this.lblEinteilungAufgabe2.AutoSize = true;
-            this.lblEinteilungAufgabe2.Location = new System.Drawing.Point(716, 109);
+            this.lblEinteilungAufgabe2.Location = new System.Drawing.Point(693, 108);
             this.lblEinteilungAufgabe2.Name = "lblEinteilungAufgabe2";
             this.lblEinteilungAufgabe2.Size = new System.Drawing.Size(105, 13);
             this.lblEinteilungAufgabe2.TabIndex = 7;
