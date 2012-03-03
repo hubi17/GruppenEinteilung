@@ -38,6 +38,8 @@
             this.btnEinteilen = new System.Windows.Forms.Button();
             this.pnlAufgabe1 = new System.Windows.Forms.Panel();
             this.pnlAufgabe2 = new System.Windows.Forms.Panel();
+            this.lblEinteilungAufgabe1 = new System.Windows.Forms.Label();
+            this.lblEinteilungAufgabe2 = new System.Windows.Forms.Label();
             this.pnlInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGruppen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSchueler)).BeginInit();
@@ -194,11 +196,33 @@
             this.pnlAufgabe2.Size = new System.Drawing.Size(244, 417);
             this.pnlAufgabe2.TabIndex = 5;
             // 
+            // lblEinteilungAufgabe1
+            // 
+            this.lblEinteilungAufgabe1.AutoSize = true;
+            this.lblEinteilungAufgabe1.Location = new System.Drawing.Point(446, 108);
+            this.lblEinteilungAufgabe1.Name = "lblEinteilungAufgabe1";
+            this.lblEinteilungAufgabe1.Size = new System.Drawing.Size(105, 13);
+            this.lblEinteilungAufgabe1.TabIndex = 6;
+            this.lblEinteilungAufgabe1.Text = "Einteilung Aufgabe 1";
+            this.lblEinteilungAufgabe1.Visible = false;
+            // 
+            // lblEinteilungAufgabe2
+            // 
+            this.lblEinteilungAufgabe2.AutoSize = true;
+            this.lblEinteilungAufgabe2.Location = new System.Drawing.Point(716, 109);
+            this.lblEinteilungAufgabe2.Name = "lblEinteilungAufgabe2";
+            this.lblEinteilungAufgabe2.Size = new System.Drawing.Size(105, 13);
+            this.lblEinteilungAufgabe2.TabIndex = 7;
+            this.lblEinteilungAufgabe2.Text = "Einteilung Aufgabe 2";
+            this.lblEinteilungAufgabe2.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(953, 590);
+            this.Controls.Add(this.lblEinteilungAufgabe2);
+            this.Controls.Add(this.lblEinteilungAufgabe1);
             this.Controls.Add(this.pnlAufgabe2);
             this.Controls.Add(this.pnlAufgabe1);
             this.Controls.Add(this.btnEinteilen);
@@ -211,6 +235,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudGruppen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSchueler)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -231,6 +256,8 @@
         private System.Windows.Forms.Button btnEinteilen;
         private System.Windows.Forms.Panel pnlAufgabe1;
         private System.Windows.Forms.Panel pnlAufgabe2;
+        private System.Windows.Forms.Label lblEinteilungAufgabe1;
+        private System.Windows.Forms.Label lblEinteilungAufgabe2;
 
 
     }

@@ -6,9 +6,8 @@
 
 /*
  * TODO
- * -wenn Anzahl SChüler erniedrigt wird, bestehende Einträge anpassen.
- * -Schüler Namen anstatt Nr.
  * -Positionierung mittels Point statt Top und Left.
+ * -init method to set sane default values.
  */
 
 using System;
@@ -24,7 +23,7 @@ namespace _20120301_gruppenEinteilung {
 
     public partial class Form1 : Form {
 
-        const int DEFAULTGRUPPEN = 2;
+        const int DEFAULTGRUPPENGROESSE = 2;
         int anzahlSchueler = 0;
         int gruppenGroesse = 0;
         SchuelerSelection[] mSchueler;
@@ -33,11 +32,15 @@ namespace _20120301_gruppenEinteilung {
         string[,] mAuswahlAufgabe2;
         GruppenSelection[] mAufgabe1;
         GruppenSelection[] mAufgabe2;
+        Random mRnd = new Random();
+        // variable to store used indeces for random groups
+        int[] mIndeces;
+        int mIndexPos;
 
         public Form1() {
             
             InitializeComponent();
-            nudGruppen.Value = DEFAULTGRUPPEN;
+            nudGruppen.Value = DEFAULTGRUPPENGROESSE;
         }
 
         public class GruppenSelection {
@@ -87,12 +90,17 @@ namespace _20120301_gruppenEinteilung {
 
                 return gbxSelection;
             }
+
+            public static void resetZaehler() {
+
+                gruppenZaehler = 1;
+            }
         }
 
         public class SchuelerSelection {
 
             private GroupBox gbxSelection;
-            private Label lblSchueler;
+            private TextBox tbxSchueler;
             private RadioButton rbtnAufgabe1;
             private RadioButton rbtnAufgabe2;
             private CheckBox cbxSolo;
@@ -101,7 +109,7 @@ namespace _20120301_gruppenEinteilung {
             public SchuelerSelection() {
 
                 gbxSelection = new GroupBox();
-                lblSchueler = new Label();
+                tbxSchueler = new TextBox();
                 rbtnAufgabe1 = new RadioButton();
                 rbtnAufgabe2 = new RadioButton();
                 cbxSolo = new CheckBox();
@@ -110,7 +118,7 @@ namespace _20120301_gruppenEinteilung {
             public SchuelerSelection(int pSchueler, int pLeft, int pTop) {
 
                 gbxSelection = new GroupBox();
-                lblSchueler = new Label();
+                tbxSchueler = new TextBox();
                 rbtnAufgabe1 = new RadioButton();
                 rbtnAufgabe2 = new RadioButton();
                 cbxSolo = new CheckBox();
@@ -120,8 +128,8 @@ namespace _20120301_gruppenEinteilung {
                 gbxSelection.Height = 40;
                 gbxSelection.Width = 335;
                 
-                lblSchueler.Left = 5;
-                lblSchueler.Top = 15;
+                tbxSchueler.Left = 5;
+                tbxSchueler.Top = 15;
                 
                 rbtnAufgabe1.Left = 100;
                 rbtnAufgabe1.Top = 10;
@@ -135,14 +143,14 @@ namespace _20120301_gruppenEinteilung {
                 cbxSolo.Top = 10;
                 cbxSolo.Width = 20;
                 
-                lblSchueler.Text = Convert.ToString(pSchueler);
+                tbxSchueler.Text = Convert.ToString(pSchueler);
                 rbtnAufgabe1.Text = "";
                 rbtnAufgabe2.Text = "";
 
 
                 gbxSelection.Controls.Add(rbtnAufgabe1);
                 gbxSelection.Controls.Add(rbtnAufgabe2);
-                gbxSelection.Controls.Add(lblSchueler);
+                gbxSelection.Controls.Add(tbxSchueler);
                 gbxSelection.Controls.Add(cbxSolo);
             }
 
@@ -151,9 +159,9 @@ namespace _20120301_gruppenEinteilung {
                 return gbxSelection;
             }
 
-            public Label getSchueler() {
+            public TextBox getSchueler() {
 
-                return lblSchueler;
+                return tbxSchueler;
             }
 
             public RadioButton getAufgabe1() {
@@ -176,6 +184,8 @@ namespace _20120301_gruppenEinteilung {
 
             int vTopPos = 0;
             
+            //reset output panel
+            pnlAuswahl.Controls.Clear();
 
             if (nudSchueler.Value > 0 && nudGruppen.Value > 0) {
 
@@ -217,17 +227,21 @@ namespace _20120301_gruppenEinteilung {
             btnEinteilen.Visible = false;
 
             pnlAuswahl.Controls.Clear();
+            pnlAufgabe1.Controls.Clear();
 
             gruppenGroesse = 0;
             anzahlSchueler = 0;
 
-            nudGruppen.Value = DEFAULTGRUPPEN;
+            nudGruppen.Value = DEFAULTGRUPPENGROESSE;
             nudSchueler.Value = 0;
+
+            GruppenSelection.resetZaehler();
         }
 
         private void btnEinteilen_Click_1(object sender, EventArgs e) {
 
             //TODO check that all radio buttons selected
+            //may not be needed as certain students not put into groups
 
             int countAufgabe1 = 0;
             int iterAufgabe1 = 0;
@@ -236,6 +250,11 @@ namespace _20120301_gruppenEinteilung {
             int vTopPos = 0;
 
             mAuswahl = new string[anzahlSchueler, 4];
+
+            // reset output panels
+            // IMPORTANT!!!! - makes pressing button multiple times generate new random groups
+            pnlAufgabe1.Controls.Clear();
+            pnlAufgabe2.Controls.Clear();
 
             // Schleife zur Determinierung der Groesse der einzelnen Aufgabengruppen.
             for (int i = 0; i < anzahlSchueler; i++) {
@@ -274,16 +293,104 @@ namespace _20120301_gruppenEinteilung {
                 }
             }
 
-            mAufgabe1 = new GruppenSelection[countAufgabe1];
-
+            //group1
+            mIndeces = new int[countAufgabe1];
+            GruppenSelection.resetZaehler();
+            // initialize array with -1 indeces
             for (int i = 0; i < countAufgabe1; i++) {
-                mAufgabe1[i] = new GruppenSelection(mAuswahlAufgabe1[i, 0], "0", 5, vTopPos);
+                
+                mIndeces[i] = -1;
+            }
+
+            mIndexPos = 0;
+            mAufgabe1 = new GruppenSelection[countAufgabe1 / DEFAULTGRUPPENGROESSE];
+
+            // check for uneven group size
+            for (int i = 0; i < countAufgabe1 / DEFAULTGRUPPENGROESSE; i++) {
+
+                mAufgabe1[i] = gruppeEinteilen(mAuswahlAufgabe1, countAufgabe1, vTopPos);
                 pnlAufgabe1.Controls.Add(mAufgabe1[i].getGroupBox());
                 vTopPos += 80;
             }
+
+            mAufgabe1 = aufgabeEinteilen(countAufgabe1);
+            mAufgabe2 = aufgabeEinteilen(countAufgabe2);
+
+            lblEinteilungAufgabe1.Visible = true;
+            lblEinteilungAufgabe2.Visible = true;
         }
 
-        private void gruppenEinteilen() {
+        private GruppenSelection[] aufgabeEinteilen(int pGruppenGroesse) {
+
+            int vTopPos = 0;
+            GruppenSelection[] vReturn = new GruppenSelection[pGruppenGroesse / DEFAULTGRUPPENGROESSE];
+
+            // reset Zaehler for each group
+            GruppenSelection.resetZaehler();
+
+            // reset index array
+            mIndeces = new int[pGruppenGroesse];
+
+            // initialize array with -1 indeces
+            for (int i = 0; i < pGruppenGroesse; i++) {
+
+                mIndeces[i] = -1;
+            }
+
+            mIndexPos = 0;
+
+            for (int i = 0; i < pGruppenGroesse / DEFAULTGRUPPENGROESSE; i++) {
+
+                mAufgabe2[i] = gruppeEinteilen(mAuswahlAufgabe2, pGruppenGroesse, vTopPos);
+                pnlAufgabe2.Controls.Add(mAufgabe2[i].getGroupBox());
+                vTopPos += 80;
+            }
+
+            return vReturn;
+
+        }
+
+        private GruppenSelection gruppeEinteilen(string[,] pAuswahlAufgabe, int pCountAufgabe, int pTopPos) {
+
+            GruppenSelection vReturn;
+            int vRandom1 = 0;
+            int vRandom2 = 0;
+
+            vRandom1 = getRandomIndex(pCountAufgabe);
+            vRandom2 = getRandomIndex(pCountAufgabe);
+
+            vReturn = new GruppenSelection(pAuswahlAufgabe[vRandom1, 0],
+                                           pAuswahlAufgabe[vRandom2, 0],
+                                           5, pTopPos);
+
+            return vReturn;
+        }
+
+        private int getRandomIndex(int pMaxRange) {
+
+            int vRandom = 0;
+            bool mUnique = false;
+
+            while (!mUnique) {
+                
+                vRandom = mRnd.Next(pMaxRange);
+                mUnique = true;
+                
+                for (int i = 0; i <= mIndexPos; i++) {
+                    
+                    if (vRandom == mIndeces[i]) {
+                        
+                        mUnique = false;
+                    }
+                }
+
+            }
+
+            // add vRandom to array of used indeces.
+            mIndeces[mIndexPos] = vRandom;
+            mIndexPos++;
+
+            return vRandom;
         }
     }
 }
