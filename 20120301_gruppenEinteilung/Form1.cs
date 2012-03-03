@@ -8,6 +8,7 @@
  * TODO
  * -wenn Anzahl SChüler erniedrigt wird, bestehende Einträge anpassen.
  * -Schüler Namen anstatt Nr.
+ * -Positionierung mittels Point statt Top und Left.
  */
 
 using System;
@@ -30,11 +31,62 @@ namespace _20120301_gruppenEinteilung {
         string[,] mAuswahl;
         string[,] mAuswahlAufgabe1;
         string[,] mAuswahlAufgabe2;
+        GruppenSelection[] mAufgabe1;
+        GruppenSelection[] mAufgabe2;
 
         public Form1() {
             
             InitializeComponent();
             nudGruppen.Value = DEFAULTGRUPPEN;
+        }
+
+        public class GruppenSelection {
+
+            private GroupBox gbxSelection;
+            // TODO array of labels to dynamically generate group size
+            private Label lblSchueler1;
+            private Label lblSchueler2;
+            private static int gruppenZaehler = 1;
+
+            public GruppenSelection() {
+
+                gbxSelection = new GroupBox();
+                lblSchueler1 = new Label();
+                lblSchueler2 = new Label();
+                gruppenZaehler++;
+            }
+
+            public GruppenSelection(string pSchueler1, string pSchueler2, int pLeft, int pTop) {
+
+                gbxSelection = new GroupBox();
+                lblSchueler1 = new Label();
+                lblSchueler2 = new Label();
+
+                gbxSelection.Left = pLeft;
+                gbxSelection.Top = pTop;
+                gbxSelection.Height = 65;
+                gbxSelection.Width = 220;
+                gbxSelection.Text = "Gruppe " + gruppenZaehler;
+
+                lblSchueler1.Left = 5;
+                lblSchueler1.Top = 15;
+
+                lblSchueler2.Left = 5;
+                lblSchueler2.Top = 40;
+
+                lblSchueler1.Text = pSchueler1;
+                lblSchueler2.Text = pSchueler2;
+
+                gbxSelection.Controls.Add(lblSchueler1);
+                gbxSelection.Controls.Add(lblSchueler2);
+
+                gruppenZaehler++;
+            }
+
+            public GroupBox getGroupBox() {
+
+                return gbxSelection;
+            }
         }
 
         public class SchuelerSelection {
@@ -122,7 +174,7 @@ namespace _20120301_gruppenEinteilung {
 
         private void btnEingeben_Click(object sender, EventArgs e) {
 
-            int topPos = 0;
+            int vTopPos = 0;
             
 
             if (nudSchueler.Value > 0 && nudGruppen.Value > 0) {
@@ -140,9 +192,9 @@ namespace _20120301_gruppenEinteilung {
 
                 for (int i = 0; i < anzahlSchueler; i++) {
                     
-                    mSchueler[i] = new SchuelerSelection(i + 1, lblSchueler.Left, topPos);
+                    mSchueler[i] = new SchuelerSelection(i + 1, lblSchueler.Left, vTopPos);
                     pnlAuswahl.Controls.Add(mSchueler[i].getGroupBox());
-                    topPos += 40;
+                    vTopPos += 40;
                 }
             } else {
 
@@ -181,6 +233,7 @@ namespace _20120301_gruppenEinteilung {
             int iterAufgabe1 = 0;
             int countAufgabe2 = 0;
             int iterAufgabe2 = 0;
+            int vTopPos = 0;
 
             mAuswahl = new string[anzahlSchueler, 4];
 
@@ -199,9 +252,6 @@ namespace _20120301_gruppenEinteilung {
                 }
             }
 
-            MessageBox.Show("Aufgabe1 " + countAufgabe1);
-            MessageBox.Show("Aufgabe2 " + countAufgabe2);
-
             mAuswahlAufgabe1 = new string[countAufgabe1, 2];
             mAuswahlAufgabe2 = new string[countAufgabe2, 2];
 
@@ -210,33 +260,30 @@ namespace _20120301_gruppenEinteilung {
                 
                 if (mSchueler[i].getAufgabe1().Checked == true) {
                     
-                    mAuswahlAufgabe1[iterAufgabe1, 0] = Convert.ToString(mSchueler[i].getSchueler());
+                    mAuswahlAufgabe1[iterAufgabe1, 0] = mSchueler[i].getSchueler().Text;
                     mAuswahlAufgabe1[iterAufgabe1, 1] = Convert.ToString(mSchueler[i].getSolo().Checked);
                     iterAufgabe1++;
                 } else {
                     
                     if (mSchueler[i].getAufgabe2().Checked == true) {
                         
-                        mAuswahlAufgabe2[iterAufgabe2, 0] = Convert.ToString(mSchueler[i].getSchueler());
+                        mAuswahlAufgabe2[iterAufgabe2, 0] = mSchueler[i].getSchueler().Text;
                         mAuswahlAufgabe2[iterAufgabe2, 1] = Convert.ToString(mSchueler[i].getSolo().Checked);
                         iterAufgabe2++;
                     }
                 }
             }
 
-            MessageBox.Show("Aufgabe1 " + iterAufgabe1);
-            MessageBox.Show("Aufgabe2 " + iterAufgabe2);
+            mAufgabe1 = new GruppenSelection[countAufgabe1];
 
-            /*
-             * evtl keine volle liste aller benötigt
-            for (int i = 0; i < anzahlSchueler; i++) {
-                
-                mAuswahl[i, 0] = Convert.ToString(mSchueler[i].getSchueler());
-                mAuswahl[i, 1] = Convert.ToString(mSchueler[i].getAufgabe1().Checked);
-                mAuswahl[i, 2] = Convert.ToString(mSchueler[i].getAufgabe2().Checked);
-                mAuswahl[i, 3] = Convert.ToString(mSchueler[i].getSolo().Checked);
+            for (int i = 0; i < countAufgabe1; i++) {
+                mAufgabe1[i] = new GruppenSelection(mAuswahlAufgabe1[i, 0], "0", 5, vTopPos);
+                pnlAufgabe1.Controls.Add(mAufgabe1[i].getGroupBox());
+                vTopPos += 80;
             }
-             */
+        }
+
+        private void gruppenEinteilen() {
         }
     }
 }

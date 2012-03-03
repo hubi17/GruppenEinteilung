@@ -36,6 +36,8 @@
             this.btnEingeben = new System.Windows.Forms.Button();
             this.pnlAuswahl = new System.Windows.Forms.Panel();
             this.btnEinteilen = new System.Windows.Forms.Button();
+            this.pnlAufgabe1 = new System.Windows.Forms.Panel();
+            this.pnlAufgabe2 = new System.Windows.Forms.Panel();
             this.pnlInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGruppen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSchueler)).BeginInit();
@@ -162,7 +164,7 @@
             this.pnlAuswahl.AutoScroll = true;
             this.pnlAuswahl.Location = new System.Drawing.Point(13, 135);
             this.pnlAuswahl.Name = "pnlAuswahl";
-            this.pnlAuswahl.Size = new System.Drawing.Size(546, 417);
+            this.pnlAuswahl.Size = new System.Drawing.Size(427, 417);
             this.pnlAuswahl.TabIndex = 2;
             // 
             // btnEinteilen
@@ -176,11 +178,29 @@
             this.btnEinteilen.Visible = false;
             this.btnEinteilen.Click += new System.EventHandler(this.btnEinteilen_Click_1);
             // 
+            // pnlAufgabe1
+            // 
+            this.pnlAufgabe1.AutoScroll = true;
+            this.pnlAufgabe1.Location = new System.Drawing.Point(446, 135);
+            this.pnlAufgabe1.Name = "pnlAufgabe1";
+            this.pnlAufgabe1.Size = new System.Drawing.Size(244, 417);
+            this.pnlAufgabe1.TabIndex = 4;
+            // 
+            // pnlAufgabe2
+            // 
+            this.pnlAufgabe2.AutoScroll = true;
+            this.pnlAufgabe2.Location = new System.Drawing.Point(696, 135);
+            this.pnlAufgabe2.Name = "pnlAufgabe2";
+            this.pnlAufgabe2.Size = new System.Drawing.Size(244, 417);
+            this.pnlAufgabe2.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 590);
+            this.ClientSize = new System.Drawing.Size(953, 590);
+            this.Controls.Add(this.pnlAufgabe2);
+            this.Controls.Add(this.pnlAufgabe1);
             this.Controls.Add(this.btnEinteilen);
             this.Controls.Add(this.pnlAuswahl);
             this.Controls.Add(this.pnlInput);
@@ -209,6 +229,8 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label lblSolo;
         private System.Windows.Forms.Button btnEinteilen;
+        private System.Windows.Forms.Panel pnlAufgabe1;
+        private System.Windows.Forms.Panel pnlAufgabe2;
 
 
     }
