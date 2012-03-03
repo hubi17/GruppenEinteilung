@@ -1,1 +1,16 @@
 Projekt der FSI 1 um zufällige Gruppeneinteilungen für verschiedene Aufgaben vorzunehmen
+
+TODO:
+	- Ungerade Anzahl von Gruppenmitglieder
+	- Einzelgruppen
+	- Variable Gruppengröße
+	- Variable Anzahl von Aufgaben
+	- Speichern
+	- Laden
+
+Funktion:
+	- Anzahl Schüler auswählen und auf "Eingeben" klicken
+	- Selektion über Radio-Buttons
+	- Nummern können in Namen geändert werden
+	- Auf "Einteilen" klicken
+	- Gruppeneinteilungen der ausgewählten Aufgaben erscheinen
