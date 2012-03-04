@@ -11,6 +11,9 @@
  * - enable variable group size.
  * - enable variable amount of tasks.
  * - enable solo groups.
+ * - tabstops.
+ * - when number of students increased or decreased don't reset all 
+ *   other students just add or remove necessary components.
  */
 
 using System;
@@ -255,9 +258,13 @@ namespace _20120301_gruppenEinteilung {
             //may not be needed as certain students not put into groups
 
             int vCountAufgabe1 = 0;
+            //int vCountAufgabe1Solo = 0;
             int vIterAufgabe1 = 0;
+            //int vIterAufgabe1Solo = 0;
             int vCountAufgabe2 = 0;
+            //int vCountAufgabe2Solo = 0;
             int vIterAufgabe2 = 0;
+            //int vIterAufgabe2Solo = 0;
             string[,] vAuswahlAufgabe1;
             string[,] vAuswahlAufgabe2;
             GruppenSelection[] vAufgabe1;
@@ -274,12 +281,26 @@ namespace _20120301_gruppenEinteilung {
             for (int i = 0; i < mAnzahlSchueler; i++) {
                 
                 if (mSchueler[i].getAufgabe1().Checked == true) {
-                    
+
+                    /*
+                    if (mSchueler[i].getSolo().Checked == true) {
+                        vCountAufgabe1Solo++;
+                    } else {
+                        vCountAufgabe1++;
+                    }
+                    */
                     vCountAufgabe1++;
                 } else {
                     
                     if (mSchueler[i].getAufgabe2().Checked == true) {
                         
+                        /*
+                        if (mSchueler[i].getSolo().Checked == true) {
+                            vCountAufgabe2Solo++;
+                        } else {
+                            vCountAufgabe2++;
+                        }
+                        */
                         vCountAufgabe2++;
                     }
                 }
@@ -320,30 +341,32 @@ namespace _20120301_gruppenEinteilung {
         private GruppenSelection[] aufgabeEinteilen(string[,] pAuswahlAufgabe, int pAufgabenGroesse) {
 
             int vTopPos = 0;
-            int vGruppenGroesse = 0;
+            int vAnzahlGruppen = 0;
             GruppenSelection[] vReturnGruppe;
 
             // determine group size
             // if uneven number then add one
-            /*
+            
             if (pAufgabenGroesse % DEFAULTGRUPPENGROESSE == 0) {
                 
-                vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE;
+                vAnzahlGruppen = pAufgabenGroesse / DEFAULTGRUPPENGROESSE;
             } else {
                 
-                vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE + 1;
+                vAnzahlGruppen = (pAufgabenGroesse / DEFAULTGRUPPENGROESSE) + 1;
             }
-             */
+            
             // doesn't really work yet. for now this at least doesn't crash
-            vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE;
+            //vGruppenGroesse = pAufgabenGroesse / DEFAULTGRUPPENGROESSE;
 
-            vReturnGruppe = new GruppenSelection[vGruppenGroesse];
+            vReturnGruppe = new GruppenSelection[vAnzahlGruppen];
 
             // reset array of used indeces for random groups
             mIndeces = new int[pAufgabenGroesse];
 
             // initialize array with -1 indeces
             // so that element with index 0 can also be randomly picked
+            
+            //for (int i = 0; i < pAufgabenGroesse; i++) {
             for (int i = 0; i < pAufgabenGroesse; i++) {
 
                 mIndeces[i] = -1;
@@ -351,9 +374,22 @@ namespace _20120301_gruppenEinteilung {
 
             mIndexPos = 0;
 
-            for (int i = 0; i < vGruppenGroesse; i++) {
+            for (int i = 0; i < vAnzahlGruppen; i++) {
 
-                vReturnGruppe[i] = gruppeEinteilen(pAuswahlAufgabe, pAufgabenGroesse, vTopPos);
+                // letzte gruppe bei ungerader anzahl als einzel gruppe
+                if (i == vAnzahlGruppen - 1) {
+
+                    if (pAufgabenGroesse % 2 == 1) {
+
+                        vReturnGruppe[i] = einzelEinteilen(pAuswahlAufgabe, pAufgabenGroesse, vTopPos);
+                    } else {
+                     
+                        vReturnGruppe[i] = gruppeEinteilen(pAuswahlAufgabe, pAufgabenGroesse, vTopPos);
+                    }
+                } else {
+                    
+                    vReturnGruppe[i] = gruppeEinteilen(pAuswahlAufgabe, pAufgabenGroesse, vTopPos);
+                }
                 // vTopPos sets the position of the GruppenSelection Element so that it
                 // is positioned correctly once added to the Panel
                 vTopPos += 80;
@@ -388,6 +424,20 @@ namespace _20120301_gruppenEinteilung {
             return vReturn;
         }
 
+        private GruppenSelection einzelEinteilen(string[,] pAuswahlAufgabe, int pCountAufgabe, int pTopPos) {
+
+            GruppenSelection vReturn;
+            int vRandom1 = 0;
+
+            vRandom1 = getRandomIndex(pCountAufgabe);
+
+            vReturn = new GruppenSelection(pAuswahlAufgabe[vRandom1, 0],
+                                           " ",
+                                           5, pTopPos);
+
+            return vReturn;
+        }
+
         private int getRandomIndex(int pMaxRange) {
 
             int vRandom = 0;
@@ -413,6 +463,17 @@ namespace _20120301_gruppenEinteilung {
             mIndexPos++;
 
             return vRandom;
+        }
+
+        private void btnSpeichern_Click(object sender, EventArgs e) {
+
+            SaveFileDialog sfdSpeichern = new SaveFileDialog();
+
+            sfdSpeichern.Filter = "csv Datei (*.csv)|*.csv";
+
+            if (sfdSpeichern.ShowDialog() == System.Windows.Forms.DialogResult.OK
+                && sfdSpeichern.FileName.Length > 0) {
+            }
         }
     }
 }

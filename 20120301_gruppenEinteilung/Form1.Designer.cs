@@ -40,6 +40,8 @@
             this.pnlAufgabe2 = new System.Windows.Forms.Panel();
             this.lblEinteilungAufgabe1 = new System.Windows.Forms.Label();
             this.lblEinteilungAufgabe2 = new System.Windows.Forms.Label();
+            this.btnSpeichern = new System.Windows.Forms.Button();
+            this.btnLaden = new System.Windows.Forms.Button();
             this.pnlInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGruppen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSchueler)).BeginInit();
@@ -47,6 +49,8 @@
             // 
             // pnlInput
             // 
+            this.pnlInput.Controls.Add(this.btnLaden);
+            this.pnlInput.Controls.Add(this.btnSpeichern);
             this.pnlInput.Controls.Add(this.lblSolo);
             this.pnlInput.Controls.Add(this.btnClear);
             this.pnlInput.Controls.Add(this.lblAufgabe2);
@@ -216,6 +220,27 @@
             this.lblEinteilungAufgabe2.Text = "Einteilung Aufgabe 2";
             this.lblEinteilungAufgabe2.Visible = false;
             // 
+            // btnSpeichern
+            // 
+            this.btnSpeichern.Enabled = false;
+            this.btnSpeichern.Location = new System.Drawing.Point(321, 17);
+            this.btnSpeichern.Name = "btnSpeichern";
+            this.btnSpeichern.Size = new System.Drawing.Size(75, 23);
+            this.btnSpeichern.TabIndex = 23;
+            this.btnSpeichern.Text = "Speichern";
+            this.btnSpeichern.UseVisualStyleBackColor = true;
+            this.btnSpeichern.Click += new System.EventHandler(this.btnSpeichern_Click);
+            // 
+            // btnLaden
+            // 
+            this.btnLaden.Enabled = false;
+            this.btnLaden.Location = new System.Drawing.Point(321, 43);
+            this.btnLaden.Name = "btnLaden";
+            this.btnLaden.Size = new System.Drawing.Size(75, 23);
+            this.btnLaden.TabIndex = 24;
+            this.btnLaden.Text = "Laden";
+            this.btnLaden.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -258,6 +283,8 @@
         private System.Windows.Forms.Panel pnlAufgabe2;
         private System.Windows.Forms.Label lblEinteilungAufgabe1;
         private System.Windows.Forms.Label lblEinteilungAufgabe2;
+        private System.Windows.Forms.Button btnLaden;
+        private System.Windows.Forms.Button btnSpeichern;
 
 
     }
